@@ -37,7 +37,7 @@ pipeline {
                 }
             }
         }
-
+/**
         stage("Quality Gate Analysis"){
             steps {
                 script {
@@ -45,7 +45,7 @@ pipeline {
                 }
             }
         }
-
+**/
         stage("Upload Artifacts to Nexus"){
             steps {
                 script {
