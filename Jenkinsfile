@@ -6,7 +6,7 @@ pipeline {
 
         stage("Git Checkout"){
             steps {
-                git branch: 'main', url: 'https://github.com/vishalchauhan91196/java-app.git'
+                git branch: 'main', url: 'https://github.com/jaiswalrohit13/java-app.git'
             }
         }
 
@@ -31,9 +31,38 @@ pipeline {
         stage("Static Code Analysis"){
             steps {
                 script {
-                    withSonarQubeEnv(credentialsId: 'sonarqube') {
+                    withSonarQubeEnv(credentialsId: 'sqube') {
                         sh 'mvn clean package sonar:sonar'
                     }
+                }
+            }
+        }
+
+        stage("Quality Gate Analysis"){
+            steps {
+                script {
+                   waitForQualityGate abortPipeline: false, credentialsId: 'sqube' 
+                }
+            }
+        }
+
+        stage("Upload Artifacts to Nexus"){
+            steps {
+                script {
+                   nexusArtifactUploader artifacts:
+                    [[
+                    artifactId: 'springboot',
+                    classifier: '',
+                    file: 'target/UPES.jar',
+                    type: 'jar'
+                    ]], 
+                    credentialsId: 'nexusid', 
+                    groupId: 'com.example', 
+                    nexusUrl: '44.200.37.98:8081', 
+                    nexusVersion: 'nexus3', 
+                    protocol: 'http', 
+                    repository: 'java-release', 
+                    version: '1.0.0'
                 }
             }
         }
