@@ -31,7 +31,7 @@ pipeline {
         stage("Static Code Analysis"){
             steps {
                 script {
-                    withSonarQubeEnv(credentialsId: 'sqube') {
+                    withSonarQubeEnv(credentialsId: 'sonarqube') {
                         sh 'mvn clean package sonar:sonar'
                     }
                 }
@@ -41,7 +41,7 @@ pipeline {
         stage("Quality Gate Analysis"){
             steps {
                 script {
-                   waitForQualityGate abortPipeline: false, credentialsId: 'sqube' 
+                   waitForQualityGate abortPipeline: false, credentialsId: 'sonarqube' 
                 }
             }
         }
